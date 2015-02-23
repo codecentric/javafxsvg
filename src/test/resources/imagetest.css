@@ -1,0 +1,5 @@
+@CHARSET "UTF-8";
+
+#TestButton {
+  -fx-graphic: url('bacon.svg');
+}
