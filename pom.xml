@@ -18,11 +18,6 @@
   </build>
   
   <dependencies>
-  	<dependency>
-		<groupId>org.apache.xmlgraphics</groupId>
-		<artifactId>batik-svggen</artifactId>
-		<version>1.7</version>
-	</dependency>
 	<dependency>
 		<groupId>org.apache.xmlgraphics</groupId>
 		<artifactId>batik-transcoder</artifactId>
@@ -32,6 +27,12 @@
 		<groupId>org.loadui</groupId>
 		<artifactId>testFx</artifactId>
 		<version>3.1.2</version>
+		<scope>test</scope>
+	</dependency>
+	<dependency>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<version>4.12</version>
 		<scope>test</scope>
 	</dependency>
   </dependencies>
