@@ -8,7 +8,6 @@ import com.sun.javafx.iio.ImageLoader;
 import com.sun.javafx.iio.ImageLoaderFactory;
 import com.sun.javafx.iio.ImageStorage;
 
-@SuppressWarnings("restriction")
 public class SvgImageLoaderFactory implements ImageLoaderFactory {
 	private static final ImageLoaderFactory instance = new SvgImageLoaderFactory();
 
