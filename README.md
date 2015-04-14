@@ -3,6 +3,9 @@
 A simple library to add SVG support to JavaFX, allowing to use SVG
 graphics just like any other image type.
 
+More details about the project can be found at the codecentric blog: 
+[Adding a custom image renderer to JavaFX 8](https://blog.codecentric.de/en/2015/03/adding-custom-image-renderer-javafx-8/)
+
 ## Usage
 
 Add this line to your application:
