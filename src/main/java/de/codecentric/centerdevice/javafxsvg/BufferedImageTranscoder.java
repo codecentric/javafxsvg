@@ -11,11 +11,12 @@ import org.apache.batik.transcoder.image.ImageTranscoder;
  * 
  * Many thanks to bb-generation for sharing this code!
  * 
+ * License unfortunately unknown, but using this code is probably categorized as
+ * "fair use" (because the code is in my opinion too simple to be licensed)
+ * 
  * @author bb-generation
- * @link http://bbgen.net/blog/2011/06/java-svg-to-bufferedimage/
- * @license Unfortunately unknown, but using this code is probably categorized
- *          as "fair use" (because the code is in my opinion too simple to be
- *          licensed)
+ * @see <a href="http://bbgen.net/blog/2011/06/java-svg-to-bufferedimage/">java-
+ *      svg-to-bufferedimage</a>
  */
 public class BufferedImageTranscoder extends ImageTranscoder {
 
