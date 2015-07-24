@@ -6,6 +6,16 @@ graphics just like any other image type.
 More details about the project can be found at the codecentric blog: 
 [Adding a custom image renderer to JavaFX 8](https://blog.codecentric.de/en/2015/03/adding-custom-image-renderer-javafx-8/)
 
+## Installation
+
+If you are using maven, just add JavaFxSVG to the dependencies
+
+		<dependency>
+			<groupId>de.codecentric.centerdevice</groupId>
+			<artifactId>javafxsvg</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
 ## Usage
 
 Add this line to your application:
