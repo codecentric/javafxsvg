@@ -8,15 +8,20 @@ import java.nio.ByteBuffer;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 
+import com.sun.glass.ui.Screen;
 import com.sun.javafx.iio.ImageFrame;
 import com.sun.javafx.iio.ImageStorage;
 import com.sun.javafx.iio.common.ImageLoaderImpl;
 
 public class SvgImageLoader extends ImageLoaderImpl {
 
+	private static final int DEFAULT_SIZE = 400;
+
 	private static final int BYTES_PER_PIXEL = 4; // RGBA
 
 	private final InputStream input;
+
+	private float maxPixelScale = 0;
 
 	protected SvgImageLoader(InputStream input) {
 		super(SvgDescriptor.getInstance());
@@ -29,33 +34,47 @@ public class SvgImageLoader extends ImageLoaderImpl {
 	}
 
 	@Override
-	public ImageFrame load(int imageIndex, int width, int height,
-			boolean preserveAspectRatio, boolean smooth) throws IOException {
+	public ImageFrame load(int imageIndex, int width, int height, boolean preserveAspectRatio, boolean smooth)
+			throws IOException {
 		if (0 != imageIndex) {
 			return null;
 		}
 
+		int imageWidth = width > 0 ? width : DEFAULT_SIZE;
+		int imageHeight = height > 0 ? height : DEFAULT_SIZE;
+
 		try {
-			return createImageFrame(width, height);
+			return createImageFrame(imageWidth, imageHeight, getPixelScale());
 		} catch (TranscoderException ex) {
 			throw new IOException(ex);
 		}
 	}
 
-	private ImageFrame createImageFrame(int width, int height)
-			throws TranscoderException {
-		BufferedImage bufferedImage = getTranscodedImage(width, height);
-		ByteBuffer imageData = getImageData(bufferedImage);
-
-		return new ImageFrame(ImageStorage.ImageType.RGBA, imageData,
-				bufferedImage.getWidth(), bufferedImage.getHeight(),
-				getStride(bufferedImage), null, null);
+	public float getPixelScale() {
+		if (maxPixelScale == 0) {
+			maxPixelScale = calculateMaxRenderScale();
+		}
+		return maxPixelScale;
 	}
 
-	private BufferedImage getTranscodedImage(int width, int height)
-			throws TranscoderException {
-		BufferedImageTranscoder trans = new BufferedImageTranscoder(
-				BufferedImage.TYPE_INT_ARGB);
+	public float calculateMaxRenderScale() {
+		float maxRenderScale = 0;
+		for (Screen screen : Screen.getScreens()) {
+			maxRenderScale = Math.max(maxRenderScale, screen.getRenderScale());
+		}
+		return maxRenderScale;
+	}
+
+	private ImageFrame createImageFrame(int width, int height, float pixelScale) throws TranscoderException {
+		BufferedImage bufferedImage = getTranscodedImage(width * pixelScale, height * pixelScale);
+		ByteBuffer imageData = getImageData(bufferedImage);
+
+		return new FixedPixelDensityImageFrame(ImageStorage.ImageType.RGBA, imageData, bufferedImage.getWidth(),
+				bufferedImage.getHeight(), getStride(bufferedImage), null, pixelScale, null);
+	}
+
+	private BufferedImage getTranscodedImage(float width, float height) throws TranscoderException {
+		BufferedImageTranscoder trans = new BufferedImageTranscoder(BufferedImage.TYPE_INT_ARGB);
 		trans.setImageSize(width, height);
 		trans.transcode(new TranscoderInput(input), null);
 
@@ -67,11 +86,10 @@ public class SvgImageLoader extends ImageLoaderImpl {
 	}
 
 	private ByteBuffer getImageData(BufferedImage bufferedImage) {
-		int[] rgb = bufferedImage.getRGB(0, 0, bufferedImage.getWidth(),
-				bufferedImage.getHeight(), null, 0, bufferedImage.getWidth());
+		int[] rgb = bufferedImage.getRGB(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight(), null, 0,
+				bufferedImage.getWidth());
 
-		byte[] imageData = new byte[getStride(bufferedImage)
-				* bufferedImage.getHeight()];
+		byte[] imageData = new byte[getStride(bufferedImage) * bufferedImage.getHeight()];
 
 		copyColorToBytes(rgb, imageData);
 		return ByteBuffer.wrap(imageData);
