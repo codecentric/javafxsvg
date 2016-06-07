@@ -13,6 +13,9 @@ import com.sun.javafx.iio.ImageFrame;
 import com.sun.javafx.iio.ImageStorage;
 import com.sun.javafx.iio.common.ImageLoaderImpl;
 
+import static org.apache.batik.transcoder.SVGAbstractTranscoder.KEY_HEIGHT;
+import static org.apache.batik.transcoder.SVGAbstractTranscoder.KEY_WIDTH;
+
 public class SvgImageLoader extends ImageLoaderImpl {
 
 	private static final int DEFAULT_SIZE = 400;
@@ -75,8 +78,9 @@ public class SvgImageLoader extends ImageLoaderImpl {
 
 	private BufferedImage getTranscodedImage(float width, float height) throws TranscoderException {
 		BufferedImageTranscoder trans = new BufferedImageTranscoder(BufferedImage.TYPE_INT_ARGB);
-		trans.setImageSize(width, height);
-		trans.transcode(new TranscoderInput(input), null);
+		trans.addTranscodingHint(KEY_WIDTH, width);
+		trans.addTranscodingHint(KEY_HEIGHT, height);
+		trans.transcode(new TranscoderInput(this.input), null);
 
 		return trans.getBufferedImage();
 	}
