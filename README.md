@@ -13,7 +13,7 @@ If you are using maven, just add JavaFxSVG to the dependencies
 		<dependency>
 			<groupId>de.codecentric.centerdevice</groupId>
 			<artifactId>javafxsvg</artifactId>
-			<version>1.1.0</version>
+			<version>1.2.0</version>
 		</dependency>
 
 ## Usage

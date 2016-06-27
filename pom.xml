@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.codecentric.centerdevice</groupId>
 	<artifactId>javafxsvg</artifactId>
-	<version>1.1.0</version>
+	<version>1.2.0</version>
 	<name>CenterDevice JavaFxSVG</name>
 	<packaging>jar</packaging>
 	<description>JavaFxSVG is a simple library adding SVG support to JavaFX and thus allowing to use SVG graphics just like any other image type.</description>
