@@ -1,5 +1,7 @@
 # JavaFxSVG
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/7f395ba27b374f9f9d5ad093f63d9682)](https://www.codacy.com/app/0x4a616e/javafxsvg?utm_source=github.com&utm_medium=referral&utm_content=codecentric/javafxsvg&utm_campaign=badger)
+
 A simple library to add SVG support to JavaFX, allowing to use SVG
 graphics just like any other image type.
 
