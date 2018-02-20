@@ -1,57 +1,174 @@
 package de.codecentric.centerdevice.javafxsvg;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-
-import javafx.stage.Screen;
-import org.apache.batik.transcoder.TranscoderException;
-import org.apache.batik.transcoder.TranscoderInput;
-
 import com.sun.javafx.iio.ImageFrame;
 import com.sun.javafx.iio.ImageStorage;
 import com.sun.javafx.iio.common.ImageLoaderImpl;
+import com.sun.javafx.iio.common.ImageTools;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.text.MessageFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javafx.stage.Screen;
+import org.apache.batik.transcoder.TranscoderException;
+import org.apache.batik.transcoder.TranscoderInput;
+import org.apache.commons.io.IOUtils;
 
 import static org.apache.batik.transcoder.SVGAbstractTranscoder.KEY_HEIGHT;
 import static org.apache.batik.transcoder.SVGAbstractTranscoder.KEY_WIDTH;
 
 public class SvgImageLoader extends ImageLoaderImpl {
 
-	private static final int DEFAULT_SIZE = 400;
-
 	private static final int BYTES_PER_PIXEL = 4; // RGBA
+	private static final int DEFAULT_SIZE = 400;
+    private static final Logger LOGGER = Logger.getLogger(SvgImageLoader.class.getName());
 
-	private final InputStream input;
-
+	private InputStream input;
 	private float maxPixelScale = 0;
 
-	protected SvgImageLoader(InputStream input) {
-		super(SvgDescriptor.getInstance());
+    /** Package visibility for unit test. */
+    @SuppressWarnings( "PackageVisibleField" )
+    int svtWidth = DEFAULT_SIZE;
+    
+    /** Package visibility for unit test. */
+    @SuppressWarnings( "PackageVisibleField" )
+    int svtHeight = DEFAULT_SIZE;
 
-		if (input == null) {
-			throw new IllegalArgumentException("input == null!");
-		}
+    protected SvgImageLoader( InputStream input ) {
 
-		this.input = input;
-	}
+        super(SvgDescriptor.getInstance());
 
-	@Override
-	public ImageFrame load(int imageIndex, int width, int height, boolean preserveAspectRatio, boolean smooth)
-			throws IOException {
-		if (0 != imageIndex) {
-			return null;
-		}
+        if ( input == null ) {
+            throw new IllegalArgumentException("input == null!");
+        }
 
-		int imageWidth = width > 0 ? width : DEFAULT_SIZE;
-		int imageHeight = height > 0 ? height : DEFAULT_SIZE;
+        try {
+            updateSVTSize(input);
+        } catch ( IOException ex ) {
+            LOGGER.log(Level.WARNING, "SVG size cannot be determined.", ex);
+        }
 
-		try {
-			return createImageFrame(imageWidth, imageHeight, getPixelScale());
-		} catch (TranscoderException ex) {
-			throw new IOException(ex);
-		}
-	}
+    }
+
+    private void updateSVTSize( InputStream input ) throws IOException {
+
+        LOGGER.info(MessageFormat.format("**** input class: {0}", input.getClass().getName()));
+
+        String svgString = IOUtils.toString(input);
+
+        this.input = new ByteArrayInputStream(svgString.getBytes());
+
+        //  Extracting the SVG attributes...
+        Pattern pattern = Pattern.compile("[^<>\\n]*<svg([^>]*)>", Pattern.DOTALL);
+        Matcher matcher = pattern.matcher(svgString);
+
+        if ( matcher.find() ) {
+
+            String group = matcher.group();
+
+            if ( group != null && !group.trim().isEmpty() ) {
+                if ( group.contains("width") && group.contains("height") ) {
+
+                    //  Extracting width...
+                    int propertyIndex = group.indexOf("width");
+                    int startIndex = group.indexOf('"', propertyIndex);
+                    int endIndex = group.indexOf('"', startIndex + 1);
+
+                    if ( startIndex >= 0 && endIndex >= 0 ) {
+
+                        String widthString = group.substring(startIndex + 1, endIndex);
+
+                        try {
+                            svtWidth = Integer.parseInt(widthString);
+                        } catch ( NumberFormatException nfex ) {
+                            LOGGER.log(Level.WARNING, "SVG 'width' is not a number: {0}", widthString);
+                        }
+
+                    }
+
+                    //  Extracting height...
+                    propertyIndex = group.indexOf("height");
+                    startIndex = group.indexOf('"', propertyIndex);
+                    endIndex = group.indexOf('"', startIndex + 1);
+
+                    if ( startIndex >= 0 && endIndex >= 0 ) {
+
+                        String heightString = group.substring(startIndex + 1, endIndex);
+
+                        try {
+                            svtHeight = Integer.parseInt(heightString);
+                        } catch ( NumberFormatException nfex ) {
+                            LOGGER.log(Level.WARNING, "SVG 'height' is not a number: {0}", heightString);
+                        }
+
+                    }
+
+                } else if ( group.contains("viewBox") ) {
+
+                    //  Extracting viewBox...
+                    int propertyIndex = group.indexOf("viewBox");
+                    int startIndex = group.indexOf('"', propertyIndex);
+                    int endIndex = group.indexOf('"', startIndex + 1);
+
+                    if ( startIndex >= 0 && endIndex >= 0 ) {
+
+                        String viewBoxString = group.substring(startIndex + 1, endIndex);
+                        String[] split = viewBoxString.split(viewBoxString.contains(",") ? "," : " ");
+
+                        if ( split.length >= 4 ) {
+
+                            try {
+                                svtWidth = (int) Math.round(Double.valueOf(split[2]));
+                            } catch ( NumberFormatException nfex ) {
+                                LOGGER.log(Level.WARNING, "SVG 'viewBox' doesn't contain a valid width: {0}", viewBoxString);
+                            }
+
+                            try {
+                                svtHeight = (int) Math.round(Double.valueOf(split[3]));
+                            } catch ( NumberFormatException nfex ) {
+                                LOGGER.log(Level.WARNING, "SVG 'viewBox' doesn't contain a valid height: {0}", viewBoxString);
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+    @Override
+    public ImageFrame load( int imageIndex, int width, int height, boolean preserveAspectRatio, boolean smooth )
+        throws IOException
+    {
+    
+        if ( 0 != imageIndex ) {
+            return null;
+        }
+
+        int[] widthHeight = ImageTools.computeDimensions(svtWidth, svtHeight, width, height, preserveAspectRatio);
+        int imageWidth = widthHeight[0];
+        int imageHeight = widthHeight[1];
+
+        try {
+            return createImageFrame(imageWidth, imageHeight, getPixelScale());
+        } catch ( TranscoderException ex ) {
+            throw new IOException(ex);
+        } finally {
+            //  Release resources.
+            input = null;
+        }
+
+    }
 
 	public float getPixelScale() {
 		if (maxPixelScale == 0) {
@@ -77,7 +194,7 @@ public class SvgImageLoader extends ImageLoaderImpl {
 				bufferedImage.getHeight(), getStride(bufferedImage), null, pixelScale, null);
 	}
 
-	private BufferedImage getTranscodedImage(float width, float height) throws TranscoderException {
+    private BufferedImage getTranscodedImage(float width, float height) throws TranscoderException {
 		BufferedImageTranscoder trans = new BufferedImageTranscoder(BufferedImage.TYPE_INT_ARGB);
 		trans.addTranscodingHint(KEY_WIDTH, width);
 		trans.addTranscodingHint(KEY_HEIGHT, height);
