@@ -9,7 +9,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -57,8 +56,6 @@ public class SvgImageLoader extends ImageLoaderImpl {
 
     private void updateSVTSize( InputStream input ) throws IOException {
 
-        LOGGER.info(MessageFormat.format("**** input class: {0}", input.getClass().getName()));
-
         String svgString = IOUtils.toString(input);
 
         this.input = new ByteArrayInputStream(svgString.getBytes());
@@ -73,41 +70,9 @@ public class SvgImageLoader extends ImageLoaderImpl {
 
             if ( group != null && !group.trim().isEmpty() ) {
                 if ( group.contains("width") && group.contains("height") ) {
-
-                    //  Extracting width...
-                    int propertyIndex = group.indexOf("width");
-                    int startIndex = group.indexOf('"', propertyIndex);
-                    int endIndex = group.indexOf('"', startIndex + 1);
-
-                    if ( startIndex >= 0 && endIndex >= 0 ) {
-
-                        String widthString = group.substring(startIndex + 1, endIndex);
-
-                        try {
-                            svtWidth = Integer.parseInt(widthString);
-                        } catch ( NumberFormatException nfex ) {
-                            LOGGER.log(Level.WARNING, "SVG 'width' is not a number: {0}", widthString);
-                        }
-
-                    }
-
-                    //  Extracting height...
-                    propertyIndex = group.indexOf("height");
-                    startIndex = group.indexOf('"', propertyIndex);
-                    endIndex = group.indexOf('"', startIndex + 1);
-
-                    if ( startIndex >= 0 && endIndex >= 0 ) {
-
-                        String heightString = group.substring(startIndex + 1, endIndex);
-
-                        try {
-                            svtHeight = Integer.parseInt(heightString);
-                        } catch ( NumberFormatException nfex ) {
-                            LOGGER.log(Level.WARNING, "SVG 'height' is not a number: {0}", heightString);
-                        }
-
-                    }
-
+                    //  Extracting width and height...
+                    svtWidth = parsingIntFromSize("width", group, svtWidth);
+                    svtHeight = parsingIntFromSize("height", group, svtHeight);
                 } else if ( group.contains("viewBox") ) {
 
                     //  Extracting viewBox...
@@ -121,19 +86,8 @@ public class SvgImageLoader extends ImageLoaderImpl {
                         String[] split = viewBoxString.split(viewBoxString.contains(",") ? "," : " ");
 
                         if ( split.length >= 4 ) {
-
-                            try {
-                                svtWidth = (int) Math.round(Double.valueOf(split[2]));
-                            } catch ( NumberFormatException nfex ) {
-                                LOGGER.log(Level.WARNING, "SVG 'viewBox' doesn't contain a valid width: {0}", viewBoxString);
-                            }
-
-                            try {
-                                svtHeight = (int) Math.round(Double.valueOf(split[3]));
-                            } catch ( NumberFormatException nfex ) {
-                                LOGGER.log(Level.WARNING, "SVG 'viewBox' doesn't contain a valid height: {0}", viewBoxString);
-                            }
-
+                            svtWidth = parseDoubleFromViewBox("width", split[2], svtWidth);
+                            svtHeight = parseDoubleFromViewBox("height", split[3], svtHeight);
                         }
 
                     }
@@ -144,6 +98,40 @@ public class SvgImageLoader extends ImageLoaderImpl {
 
         }
 
+    }
+
+    private int parsingIntFromSize ( String name, String group, int defaultValue ) {
+
+        int propertyIndex = group.indexOf(name);
+        int startIndex = group.indexOf('"', propertyIndex);
+        int endIndex = group.indexOf('"', startIndex + 1);
+
+        if ( startIndex >= 0 && endIndex >= 0 ) {
+
+            String valueString = group.substring(startIndex + 1, endIndex);
+
+            try {
+                return Integer.parseInt(valueString);
+            } catch ( NumberFormatException nfex ) {
+                LOGGER.log(Level.WARNING, "SVG \"{0}\" is not a number: {1}", new String[] { name, valueString });
+            }
+
+        }
+
+        return defaultValue;
+        
+    }
+
+    private int parseDoubleFromViewBox ( String name, String value, int defaultValue ) {
+
+        try {
+            return (int) Math.round(Double.valueOf(value));
+        } catch ( NumberFormatException nfex ) {
+            LOGGER.log(Level.WARNING, "SVG \"viewBox\" doesn't contain a valid {0}: {1}", new String[] { name, value });
+        }
+
+        return defaultValue;
+        
     }
 
     @Override
