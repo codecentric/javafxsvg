@@ -14,109 +14,109 @@ import static org.junit.Assert.assertArrayEquals;
 @SuppressWarnings( "ClassWithoutLogger" )
 public class SvgImageLoaderTest {
 
-    @Test()
-    @SuppressWarnings( "UseOfSystemOutOrSystemErr" )
-    public void testUpdateSVTSizeBacon() {
+	@Test()
+	@SuppressWarnings( "UseOfSystemOutOrSystemErr" )
+	public void testUpdateSVTSizeBacon() {
 
-        System.out.println("updateSVTSize - 'bacon.svg' stream");
+		System.out.println("updateSVTSize - 'bacon.svg' stream");
 
-        InputStream input = this.getClass().getClassLoader().getResourceAsStream("bacon.svg");
-        SvgImageLoader loader = new SvgImageLoader(input);
-        int[] result = new int[] { loader.svtWidth, loader.svtHeight };
-        int[] expResult = new int[] { 64, 29 };
+		InputStream input = this.getClass().getClassLoader().getResourceAsStream("bacon.svg");
+		SvgImageLoader loader = new SvgImageLoader(input);
+		int[] result = new int[] { loader.svtWidth, loader.svtHeight };
+		int[] expResult = new int[] { 64, 29 };
 
-        assertArrayEquals(expResult, result);
+		assertArrayEquals(expResult, result);
 
-    }
+	}
 
-    @Test()
-    @SuppressWarnings( "UseOfSystemOutOrSystemErr" )
-    public void testUpdateSVTSizeClose() {
+	@Test()
+	@SuppressWarnings( "UseOfSystemOutOrSystemErr" )
+	public void testUpdateSVTSizeClose() {
 
-        System.out.println("updateSVTSize - 'close.svg' stream");
+		System.out.println("updateSVTSize - 'close.svg' stream");
 
-        InputStream input = this.getClass().getClassLoader().getResourceAsStream("close.svg");
-        SvgImageLoader loader = new SvgImageLoader(input);
-        int[] result = new int[] { loader.svtWidth, loader.svtHeight };
-        int[] expResult = new int[] { 12, 12 };
+		InputStream input = this.getClass().getClassLoader().getResourceAsStream("close.svg");
+		SvgImageLoader loader = new SvgImageLoader(input);
+		int[] result = new int[] { loader.svtWidth, loader.svtHeight };
+		int[] expResult = new int[] { 12, 12 };
 
-        assertArrayEquals(expResult, result);
+		assertArrayEquals(expResult, result);
 
-    }
+	}
 
-    @Test()
-    @SuppressWarnings( "UseOfSystemOutOrSystemErr" )
-    public void testUpdateSVTSizeEmptyStream() {
-        
-        System.out.println("updateSVTSize - empty stream");
-        
-        InputStream input = new ByteArrayInputStream(new byte[] { });
-        SvgImageLoader loader = new SvgImageLoader(input);
-        int[] result = new int[] { loader.svtWidth, loader.svtHeight };
-        int[] expResult = new int[] { 400, 400 };
+	@Test()
+	@SuppressWarnings( "UseOfSystemOutOrSystemErr" )
+	public void testUpdateSVTSizeEmptyStream() {
 
-        assertArrayEquals(expResult, result);
+		System.out.println("updateSVTSize - empty stream");
 
-    }
+		InputStream input = new ByteArrayInputStream(new byte[] {});
+		SvgImageLoader loader = new SvgImageLoader(input);
+		int[] result = new int[] { loader.svtWidth, loader.svtHeight };
+		int[] expResult = new int[] { 400, 400 };
 
-    @Test()
-    @SuppressWarnings( "UseOfSystemOutOrSystemErr" )
-    public void testUpdateSVTSizeFallbackBacon() {
+		assertArrayEquals(expResult, result);
 
-        System.out.println("updateSVTSize - 'fallback-bacon.svg' stream");
+	}
 
-        InputStream input = this.getClass().getClassLoader().getResourceAsStream("fallback-bacon.svg");
-        SvgImageLoader loader = new SvgImageLoader(input);
-        int[] result = new int[] { loader.svtWidth, loader.svtHeight };
-        int[] expResult = new int[] { 64, 29 };
+	@Test()
+	@SuppressWarnings( "UseOfSystemOutOrSystemErr" )
+	public void testUpdateSVTSizeFallbackBacon() {
 
-        assertArrayEquals(expResult, result);
+		System.out.println("updateSVTSize - 'fallback-bacon.svg' stream");
 
-    }
+		InputStream input = this.getClass().getClassLoader().getResourceAsStream("fallback-bacon.svg");
+		SvgImageLoader loader = new SvgImageLoader(input);
+		int[] result = new int[] { loader.svtWidth, loader.svtHeight };
+		int[] expResult = new int[] { 64, 29 };
 
-    @Test()
-    @SuppressWarnings( "UseOfSystemOutOrSystemErr" )
-    public void testUpdateSVTSizeFallbackStop() {
+		assertArrayEquals(expResult, result);
 
-        System.out.println("updateSVTSize - 'fallback-stop.svg' stream");
+	}
 
-        InputStream input = this.getClass().getClassLoader().getResourceAsStream("fallback-stop.svg");
-        SvgImageLoader loader = new SvgImageLoader(input);
-        int[] result = new int[] { loader.svtWidth, loader.svtHeight };
-        int[] expResult = new int[] { 1000, 1000 };
+	@Test()
+	@SuppressWarnings( "UseOfSystemOutOrSystemErr" )
+	public void testUpdateSVTSizeFallbackStop() {
 
-        assertArrayEquals(expResult, result);
+		System.out.println("updateSVTSize - 'fallback-stop.svg' stream");
 
-    }
+		InputStream input = this.getClass().getClassLoader().getResourceAsStream("fallback-stop.svg");
+		SvgImageLoader loader = new SvgImageLoader(input);
+		int[] result = new int[] { loader.svtWidth, loader.svtHeight };
+		int[] expResult = new int[] { 1000, 1000 };
 
-    @Test()
-    @SuppressWarnings( "UseOfSystemOutOrSystemErr" )
-    public void testUpdateSVTSizePumpError() {
+		assertArrayEquals(expResult, result);
 
-        System.out.println("updateSVTSize - 'pump_error.svg' stream");
+	}
 
-        InputStream input = this.getClass().getClassLoader().getResourceAsStream("pump_error.svg");
-        SvgImageLoader loader = new SvgImageLoader(input);
-        int[] result = new int[] { loader.svtWidth, loader.svtHeight };
-        int[] expResult = new int[] { 60, 36 };
+	@Test()
+	@SuppressWarnings( "UseOfSystemOutOrSystemErr" )
+	public void testUpdateSVTSizePumpError() {
 
-        assertArrayEquals(expResult, result);
+		System.out.println("updateSVTSize - 'pump_error.svg' stream");
 
-    }
+		InputStream input = this.getClass().getClassLoader().getResourceAsStream("pump_error.svg");
+		SvgImageLoader loader = new SvgImageLoader(input);
+		int[] result = new int[] { loader.svtWidth, loader.svtHeight };
+		int[] expResult = new int[] { 60, 36 };
 
-    @Test()
-    @SuppressWarnings( "UseOfSystemOutOrSystemErr" )
-    public void testUpdateSVTSizeStop() {
+		assertArrayEquals(expResult, result);
 
-        System.out.println("updateSVTSize - 'stop.svg' stream");
+	}
 
-        InputStream input = this.getClass().getClassLoader().getResourceAsStream("stop.svg");
-        SvgImageLoader loader = new SvgImageLoader(input);
-        int[] result = new int[] { loader.svtWidth, loader.svtHeight };
-        int[] expResult = new int[] { 1000, 1000 };
+	@Test()
+	@SuppressWarnings( "UseOfSystemOutOrSystemErr" )
+	public void testUpdateSVTSizeStop() {
 
-        assertArrayEquals(expResult, result);
+		System.out.println("updateSVTSize - 'stop.svg' stream");
 
-    }
+		InputStream input = this.getClass().getClassLoader().getResourceAsStream("stop.svg");
+		SvgImageLoader loader = new SvgImageLoader(input);
+		int[] result = new int[] { loader.svtWidth, loader.svtHeight };
+		int[] expResult = new int[] { 1000, 1000 };
+
+		assertArrayEquals(expResult, result);
+
+	}
 
 }

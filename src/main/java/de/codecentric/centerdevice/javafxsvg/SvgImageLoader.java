@@ -35,161 +35,160 @@ public class SvgImageLoader extends ImageLoaderImpl {
 
 	private static final int BYTES_PER_PIXEL = 4; // RGBA
 	private static final int DEFAULT_SIZE = 400;
-    private static final Logger LOGGER = Logger.getLogger(SvgImageLoader.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(SvgImageLoader.class.getName());
 
 	private InputStream input;
 	private float maxPixelScale = 0;
 
-    /** Package visibility for unit test. */
-    @SuppressWarnings( "PackageVisibleField" )
-    int svtWidth = DEFAULT_SIZE;
-    
-    /** Package visibility for unit test. */
-    @SuppressWarnings( "PackageVisibleField" )
-    int svtHeight = DEFAULT_SIZE;
+	/** Package visibility for unit test. */
+	@SuppressWarnings( "PackageVisibleField" )
+	int svtWidth = DEFAULT_SIZE;
 
-    protected SvgImageLoader( InputStream input ) {
+	/** Package visibility for unit test. */
+	@SuppressWarnings( "PackageVisibleField" )
+	int svtHeight = DEFAULT_SIZE;
 
-        super(SvgDescriptor.getInstance());
+	protected SvgImageLoader( InputStream input ) {
 
-        if ( input == null ) {
-            throw new IllegalArgumentException("input == null!");
-        }
+		super(SvgDescriptor.getInstance());
 
-        try {
-            updateSVTSize(input);
-        } catch ( IOException ex ) {
-            LOGGER.log(Level.WARNING, "SVG size cannot be determined.", ex);
-        }
+		if ( input == null ) {
+			throw new IllegalArgumentException("input == null!");
+		}
 
-    }
+		try {
+			updateSVTSize(input);
+		} catch ( IOException ex ) {
+			LOGGER.log(Level.WARNING, "SVG size cannot be determined.", ex);
+		}
 
-    private void updateSVTSize( InputStream input ) throws IOException {
+	}
 
-        String svgString = IOUtils.toString(input);
+	private void updateSVTSize( InputStream input ) throws IOException {
 
-        this.input = new ByteArrayInputStream(svgString.getBytes());
+		String svgString = IOUtils.toString(input);
 
-        //  Extracting the SVG attributes...
-        Pattern pattern = Pattern.compile("[^<>\\n]*<svg([^>]*)>", Pattern.DOTALL);
-        Matcher matcher = pattern.matcher(svgString);
-        boolean fallback = true;
+		this.input = new ByteArrayInputStream(svgString.getBytes());
 
-        if ( matcher.find() ) {
+		//  Extracting the SVG attributes...
+		Pattern pattern = Pattern.compile("[^<>\\n]*<svg([^>]*)>", Pattern.DOTALL);
+		Matcher matcher = pattern.matcher(svgString);
+		boolean fallback = true;
 
-            String group = matcher.group();
+		if ( matcher.find() ) {
 
-            if ( group != null && !group.trim().isEmpty() ) {
-                try {
-                    if ( group.contains("width") && group.contains("height") ) {
-                        //  Extracting width and height...
-                        svtWidth = parsingIntFromSize("width", group);
-                        svtHeight = parsingIntFromSize("height", group);
-                        fallback = false;
-                    } else if ( group.contains("viewBox") ) {
+			String group = matcher.group();
 
-                        //  Extracting viewBox...
-                        int propertyIndex = group.indexOf("viewBox");
-                        int startIndex = group.indexOf('"', propertyIndex);
-                        int endIndex = group.indexOf('"', startIndex + 1);
+			if ( group != null && !group.trim().isEmpty() ) {
+				try {
+					if ( group.contains("width") && group.contains("height") ) {
+						//  Extracting width and height...
+						svtWidth = parsingIntFromSize("width", group);
+						svtHeight = parsingIntFromSize("height", group);
+						fallback = false;
+					} else if ( group.contains("viewBox") ) {
 
-                        if ( startIndex >= 0 && endIndex >= 0 ) {
+						//  Extracting viewBox...
+						int propertyIndex = group.indexOf("viewBox");
+						int startIndex = group.indexOf('"', propertyIndex);
+						int endIndex = group.indexOf('"', startIndex + 1);
 
-                            String viewBoxString = group.substring(startIndex + 1, endIndex);
-                            String[] split = viewBoxString.split(viewBoxString.contains(",") ? "," : " ");
+						if ( startIndex >= 0 && endIndex >= 0 ) {
 
-                            if ( split.length >= 4 ) {
-                                svtWidth = (int) Math.round(Double.valueOf(split[2]));
-                                svtHeight = (int) Math.round(Double.valueOf(split[3]));
-                                fallback = false;
-                            }
+							String viewBoxString = group.substring(startIndex + 1, endIndex);
+							String[] split = viewBoxString.split(viewBoxString.contains(",") ? "," : " ");
 
-                        }
+							if ( split.length >= 4 ) {
+								svtWidth = (int) Math.round(Double.valueOf(split[2]));
+								svtHeight = (int) Math.round(Double.valueOf(split[3]));
+								fallback = false;
+							}
 
-                    }
-                } catch ( NumberFormatException ex ) {
-                    LOGGER.log(
-                        Level.WARNING,
-                        "Errors determining image size from SVG attributes: {0} – {1}\n{2}",
-                        new String[] { ex.getClass().getName(), ex.getMessage(), group }
-                    );
-                }
-            }
+						}
 
-        }
+					}
+				} catch ( NumberFormatException ex ) {
+					LOGGER.log(
+						Level.WARNING,
+						"Errors determining image size from SVG attributes: {0} – {1}\n{2}",
+						new String[] { ex.getClass().getName(), ex.getMessage(), group }
+					);
+				}
+			}
 
-        if ( fallback ) {
-            fallbackSizeRetrieval(svgString);
-        }
+		}
 
-    }
+		if ( fallback ) {
+			fallbackSizeRetrieval(svgString);
+		}
 
-    private int parsingIntFromSize ( String name, String group ) {
+	}
 
-        int propertyIndex = group.indexOf(name);
-        int startIndex = group.indexOf('"', propertyIndex);
-        int endIndex = group.indexOf('"', startIndex + 1);
+	private int parsingIntFromSize( String name, String group ) {
 
-        if ( startIndex >= 0 && endIndex >= 0 ) {
-            return Integer.parseInt(group.substring(startIndex + 1, endIndex));
-        } else {
-            throw new IllegalStateException(MessageFormat.format("No value for \"{0}\" attribute", name));
-        }
+		int propertyIndex = group.indexOf(name);
+		int startIndex = group.indexOf('"', propertyIndex);
+		int endIndex = group.indexOf('"', startIndex + 1);
 
-    }
+		if ( startIndex >= 0 && endIndex >= 0 ) {
+			return Integer.parseInt(group.substring(startIndex + 1, endIndex));
+		} else {
+			throw new IllegalStateException(MessageFormat.format("No value for \"{0}\" attribute", name));
+		}
 
-    private void fallbackSizeRetrieval( String svgString ) {
+	}
 
-        try {
+	private void fallbackSizeRetrieval( String svgString ) {
 
-            SAXSVGDocumentFactory factory = new SAXSVGDocumentFactory(XMLResourceDescriptor.getXMLParserClassName());
-            InputStream is = new ByteArrayInputStream(svgString.getBytes());
-            Document document = factory.createDocument(null, is);
-            UserAgent agent = new UserAgentAdapter();
-            DocumentLoader loader= new DocumentLoader(agent);
-            BridgeContext context = new BridgeContext(agent, loader);
+		try {
 
-            context.setDynamic(true);
+			SAXSVGDocumentFactory factory = new SAXSVGDocumentFactory(XMLResourceDescriptor.getXMLParserClassName());
+			InputStream is = new ByteArrayInputStream(svgString.getBytes());
+			Document document = factory.createDocument(null, is);
+			UserAgent agent = new UserAgentAdapter();
+			DocumentLoader loader = new DocumentLoader(agent);
+			BridgeContext context = new BridgeContext(agent, loader);
 
-            GVTBuilder builder= new GVTBuilder();
-            GraphicsNode root= builder.build(context, document);
+			context.setDynamic(true);
 
-            svtWidth = (int) root.getPrimitiveBounds().getWidth();
-            svtHeight = (int) root.getPrimitiveBounds().getHeight();
+			GVTBuilder builder = new GVTBuilder();
+			GraphicsNode root = builder.build(context, document);
 
-        } catch ( IOException ex ) {
-            LOGGER.log(
-                Level.WARNING,
-                "Errors determining image size from SVG using fallback implementation: {0} – {1}",
-                new String[] { ex.getClass().getName(), ex.getMessage() }
-            );
-        }
+			svtWidth = (int) root.getPrimitiveBounds().getWidth();
+			svtHeight = (int) root.getPrimitiveBounds().getHeight();
 
-    }
+		} catch ( IOException ex ) {
+			LOGGER.log(
+				Level.WARNING,
+				"Errors determining image size from SVG using fallback implementation: {0} – {1}",
+				new String[] { ex.getClass().getName(), ex.getMessage() }
+			);
+		}
 
-    @Override
-    public ImageFrame load( int imageIndex, int width, int height, boolean preserveAspectRatio, boolean smooth )
-        throws IOException
-    {
-    
-        if ( 0 != imageIndex ) {
-            return null;
-        }
+	}
 
-        int[] widthHeight = ImageTools.computeDimensions(svtWidth, svtHeight, width, height, preserveAspectRatio);
-        int imageWidth = widthHeight[0];
-        int imageHeight = widthHeight[1];
+	@Override
+	public ImageFrame load( int imageIndex, int width, int height, boolean preserveAspectRatio, boolean smooth )
+		throws IOException {
 
-        try {
-            return createImageFrame(imageWidth, imageHeight, getPixelScale());
-        } catch ( TranscoderException ex ) {
-            throw new IOException(ex);
-        } finally {
-            //  Release resources.
-            input = null;
-        }
+		if ( 0 != imageIndex ) {
+			return null;
+		}
 
-    }
+		int[] widthHeight = ImageTools.computeDimensions(svtWidth, svtHeight, width, height, preserveAspectRatio);
+		int imageWidth = widthHeight[0];
+		int imageHeight = widthHeight[1];
+
+		try {
+			return createImageFrame(imageWidth, imageHeight, getPixelScale());
+		} catch ( TranscoderException ex ) {
+			throw new IOException(ex);
+		} finally {
+			//  Release resources.
+			input = null;
+		}
+
+	}
 
 	public float getPixelScale() {
 		if (maxPixelScale == 0) {
@@ -215,7 +214,7 @@ public class SvgImageLoader extends ImageLoaderImpl {
 				bufferedImage.getHeight(), getStride(bufferedImage), null, pixelScale, null);
 	}
 
-    private BufferedImage getTranscodedImage(float width, float height) throws TranscoderException {
+	private BufferedImage getTranscodedImage( float width, float height ) throws TranscoderException {
 		BufferedImageTranscoder trans = new BufferedImageTranscoder(BufferedImage.TYPE_INT_ARGB);
 		trans.addTranscodingHint(KEY_WIDTH, width);
 		trans.addTranscodingHint(KEY_HEIGHT, height);
