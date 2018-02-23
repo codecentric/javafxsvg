@@ -22,7 +22,7 @@ public class SvgImageLoaderTest {
 
 		InputStream input = this.getClass().getClassLoader().getResourceAsStream("bacon.svg");
 		SvgImageLoader loader = new SvgImageLoader(input);
-		int[] result = new int[] { loader.svtWidth, loader.svtHeight };
+		int[] result = new int[] { loader.getSvtWidth(), loader.getSvtHeight() };
 		int[] expResult = new int[] { 64, 29 };
 
 		assertArrayEquals(expResult, result);
@@ -37,7 +37,7 @@ public class SvgImageLoaderTest {
 
 		InputStream input = this.getClass().getClassLoader().getResourceAsStream("close.svg");
 		SvgImageLoader loader = new SvgImageLoader(input);
-		int[] result = new int[] { loader.svtWidth, loader.svtHeight };
+		int[] result = new int[] { loader.getSvtWidth(), loader.getSvtHeight() };
 		int[] expResult = new int[] { 12, 12 };
 
 		assertArrayEquals(expResult, result);
@@ -52,7 +52,7 @@ public class SvgImageLoaderTest {
 
 		InputStream input = new ByteArrayInputStream(new byte[] {});
 		SvgImageLoader loader = new SvgImageLoader(input);
-		int[] result = new int[] { loader.svtWidth, loader.svtHeight };
+		int[] result = new int[] { loader.getSvtWidth(), loader.getSvtHeight() };
 		int[] expResult = new int[] { 400, 400 };
 
 		assertArrayEquals(expResult, result);
@@ -67,7 +67,7 @@ public class SvgImageLoaderTest {
 
 		InputStream input = this.getClass().getClassLoader().getResourceAsStream("fallback-bacon.svg");
 		SvgImageLoader loader = new SvgImageLoader(input);
-		int[] result = new int[] { loader.svtWidth, loader.svtHeight };
+		int[] result = new int[] { loader.getSvtWidth(), loader.getSvtHeight() };
 		int[] expResult = new int[] { 64, 29 };
 
 		assertArrayEquals(expResult, result);
@@ -82,7 +82,7 @@ public class SvgImageLoaderTest {
 
 		InputStream input = this.getClass().getClassLoader().getResourceAsStream("fallback-stop.svg");
 		SvgImageLoader loader = new SvgImageLoader(input);
-		int[] result = new int[] { loader.svtWidth, loader.svtHeight };
+		int[] result = new int[] { loader.getSvtWidth(), loader.getSvtHeight() };
 		int[] expResult = new int[] { 1000, 1000 };
 
 		assertArrayEquals(expResult, result);
@@ -97,7 +97,7 @@ public class SvgImageLoaderTest {
 
 		InputStream input = this.getClass().getClassLoader().getResourceAsStream("pump_error.svg");
 		SvgImageLoader loader = new SvgImageLoader(input);
-		int[] result = new int[] { loader.svtWidth, loader.svtHeight };
+		int[] result = new int[] { loader.getSvtWidth(), loader.getSvtHeight() };
 		int[] expResult = new int[] { 60, 36 };
 
 		assertArrayEquals(expResult, result);
@@ -112,7 +112,7 @@ public class SvgImageLoaderTest {
 
 		InputStream input = this.getClass().getClassLoader().getResourceAsStream("stop.svg");
 		SvgImageLoader loader = new SvgImageLoader(input);
-		int[] result = new int[] { loader.svtWidth, loader.svtHeight };
+		int[] result = new int[] { loader.getSvtWidth(), loader.getSvtHeight() };
 		int[] expResult = new int[] { 1000, 1000 };
 
 		assertArrayEquals(expResult, result);

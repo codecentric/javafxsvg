@@ -40,13 +40,8 @@ public class SvgImageLoader extends ImageLoaderImpl {
 	private InputStream input;
 	private float maxPixelScale = 0;
 
-	/** Package visibility for unit test. */
-	@SuppressWarnings( "PackageVisibleField" )
-	int svtWidth = DEFAULT_SIZE;
-
-	/** Package visibility for unit test. */
-	@SuppressWarnings( "PackageVisibleField" )
-	int svtHeight = DEFAULT_SIZE;
+	private int svtWidth = DEFAULT_SIZE;
+	private int svtHeight = DEFAULT_SIZE;
 
 	protected SvgImageLoader( InputStream input ) {
 
@@ -165,6 +160,16 @@ public class SvgImageLoader extends ImageLoaderImpl {
 			);
 		}
 
+	}
+
+	/** Package visibility for unit test. */
+	int getSvtHeight() {
+		return svtHeight;
+	}
+
+	/** Package visibility for unit test. */
+	int getSvtWidth() {
+		return svtWidth;
 	}
 
 	@Override
