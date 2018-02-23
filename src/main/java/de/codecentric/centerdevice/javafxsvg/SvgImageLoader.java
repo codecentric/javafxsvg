@@ -9,14 +9,24 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.stage.Screen;
+import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
+import org.apache.batik.bridge.BridgeContext;
+import org.apache.batik.bridge.DocumentLoader;
+import org.apache.batik.bridge.GVTBuilder;
+import org.apache.batik.bridge.UserAgent;
+import org.apache.batik.bridge.UserAgentAdapter;
+import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
+import org.apache.batik.util.XMLResourceDescriptor;
 import org.apache.commons.io.IOUtils;
+import org.w3c.dom.Document;
 
 import static org.apache.batik.transcoder.SVGAbstractTranscoder.KEY_HEIGHT;
 import static org.apache.batik.transcoder.SVGAbstractTranscoder.KEY_WIDTH;
@@ -63,75 +73,98 @@ public class SvgImageLoader extends ImageLoaderImpl {
         //  Extracting the SVG attributes...
         Pattern pattern = Pattern.compile("[^<>\\n]*<svg([^>]*)>", Pattern.DOTALL);
         Matcher matcher = pattern.matcher(svgString);
+        boolean fallback = true;
 
         if ( matcher.find() ) {
 
             String group = matcher.group();
 
             if ( group != null && !group.trim().isEmpty() ) {
-                if ( group.contains("width") && group.contains("height") ) {
-                    //  Extracting width and height...
-                    svtWidth = parsingIntFromSize("width", group, svtWidth);
-                    svtHeight = parsingIntFromSize("height", group, svtHeight);
-                } else if ( group.contains("viewBox") ) {
+                try {
+                    if ( group.contains("width") && group.contains("height") ) {
+                        //  Extracting width and height...
+                        svtWidth = parsingIntFromSize("width", group);
+                        svtHeight = parsingIntFromSize("height", group);
+                        fallback = false;
+                    } else if ( group.contains("viewBox") ) {
 
-                    //  Extracting viewBox...
-                    int propertyIndex = group.indexOf("viewBox");
-                    int startIndex = group.indexOf('"', propertyIndex);
-                    int endIndex = group.indexOf('"', startIndex + 1);
+                        //  Extracting viewBox...
+                        int propertyIndex = group.indexOf("viewBox");
+                        int startIndex = group.indexOf('"', propertyIndex);
+                        int endIndex = group.indexOf('"', startIndex + 1);
 
-                    if ( startIndex >= 0 && endIndex >= 0 ) {
+                        if ( startIndex >= 0 && endIndex >= 0 ) {
 
-                        String viewBoxString = group.substring(startIndex + 1, endIndex);
-                        String[] split = viewBoxString.split(viewBoxString.contains(",") ? "," : " ");
+                            String viewBoxString = group.substring(startIndex + 1, endIndex);
+                            String[] split = viewBoxString.split(viewBoxString.contains(",") ? "," : " ");
 
-                        if ( split.length >= 4 ) {
-                            svtWidth = parseDoubleFromViewBox("width", split[2], svtWidth);
-                            svtHeight = parseDoubleFromViewBox("height", split[3], svtHeight);
+                            if ( split.length >= 4 ) {
+                                svtWidth = (int) Math.round(Double.valueOf(split[2]));
+                                svtHeight = (int) Math.round(Double.valueOf(split[3]));
+                                fallback = false;
+                            }
+
                         }
 
                     }
-
+                } catch ( NumberFormatException ex ) {
+                    LOGGER.log(
+                        Level.WARNING,
+                        "Errors determining image size from SVG attributes: {0} – {1}\n{2}",
+                        new String[] { ex.getClass().getName(), ex.getMessage(), group }
+                    );
                 }
-
             }
 
         }
 
+        if ( fallback ) {
+            fallbackSizeRetrieval(svgString);
+        }
+
     }
 
-    private int parsingIntFromSize ( String name, String group, int defaultValue ) {
+    private int parsingIntFromSize ( String name, String group ) {
 
         int propertyIndex = group.indexOf(name);
         int startIndex = group.indexOf('"', propertyIndex);
         int endIndex = group.indexOf('"', startIndex + 1);
 
         if ( startIndex >= 0 && endIndex >= 0 ) {
-
-            String valueString = group.substring(startIndex + 1, endIndex);
-
-            try {
-                return Integer.parseInt(valueString);
-            } catch ( NumberFormatException nfex ) {
-                LOGGER.log(Level.WARNING, "SVG \"{0}\" is not a number: {1}", new String[] { name, valueString });
-            }
-
+            return Integer.parseInt(group.substring(startIndex + 1, endIndex));
+        } else {
+            throw new IllegalStateException(MessageFormat.format("No value for \"{0}\" attribute", name));
         }
 
-        return defaultValue;
-        
     }
 
-    private int parseDoubleFromViewBox ( String name, String value, int defaultValue ) {
+    private void fallbackSizeRetrieval( String svgString ) {
 
         try {
-            return (int) Math.round(Double.valueOf(value));
-        } catch ( NumberFormatException nfex ) {
-            LOGGER.log(Level.WARNING, "SVG \"viewBox\" doesn't contain a valid {0}: {1}", new String[] { name, value });
+
+            SAXSVGDocumentFactory factory = new SAXSVGDocumentFactory(XMLResourceDescriptor.getXMLParserClassName());
+            InputStream is = new ByteArrayInputStream(svgString.getBytes());
+            Document document = factory.createDocument(null, is);
+            UserAgent agent = new UserAgentAdapter();
+            DocumentLoader loader= new DocumentLoader(agent);
+            BridgeContext context = new BridgeContext(agent, loader);
+
+            context.setDynamic(true);
+
+            GVTBuilder builder= new GVTBuilder();
+            GraphicsNode root= builder.build(context, document);
+
+            svtWidth = (int) root.getPrimitiveBounds().getWidth();
+            svtHeight = (int) root.getPrimitiveBounds().getHeight();
+
+        } catch ( IOException ex ) {
+            LOGGER.log(
+                Level.WARNING,
+                "Errors determining image size from SVG using fallback implementation: {0} – {1}",
+                new String[] { ex.getClass().getName(), ex.getMessage() }
+            );
         }
 
-        return defaultValue;
-        
     }
 
     @Override
