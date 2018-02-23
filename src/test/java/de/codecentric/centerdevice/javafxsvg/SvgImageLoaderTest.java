@@ -61,6 +61,21 @@ public class SvgImageLoaderTest {
 
     @Test()
     @SuppressWarnings( "UseOfSystemOutOrSystemErr" )
+    public void testUpdateSVTSizeFallbackBacon() {
+
+        System.out.println("updateSVTSize - 'fallback-bacon.svg' stream");
+
+        InputStream input = this.getClass().getClassLoader().getResourceAsStream("fallback-bacon.svg");
+        SvgImageLoader loader = new SvgImageLoader(input);
+        int[] result = new int[] { loader.svtWidth, loader.svtHeight };
+        int[] expResult = new int[] { 64, 29 };
+
+        assertArrayEquals(expResult, result);
+
+    }
+
+    @Test()
+    @SuppressWarnings( "UseOfSystemOutOrSystemErr" )
     public void testUpdateSVTSizeFallbackStop() {
 
         System.out.println("updateSVTSize - 'fallback-stop.svg' stream");
