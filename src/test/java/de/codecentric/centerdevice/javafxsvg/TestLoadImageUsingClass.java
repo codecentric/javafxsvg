@@ -14,11 +14,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.loadui.testfx.GuiTest;
 
+import de.codecentric.centerdevice.javafxsvg.bounds.AttributeDimensionProvider;
+
 public class TestLoadImageUsingClass extends GuiTest {
 
 	@BeforeClass
 	public static void installSvgLoader() {
-		SvgImageLoaderFactory.install();
+		SvgImageLoaderFactory.install(new AttributeDimensionProvider());
 	}
 
 	@Override

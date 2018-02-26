@@ -9,10 +9,10 @@ import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.UserAgentAdapter;
 import org.w3c.dom.Document;
 
-public class GraphicsNodeBoundsProvider implements BoundsProvider {
+public class GraphicsNodeDimensionProvider implements DimensionProvider {
 
 	@Override
-	public Rectangle2D getBounds(Document document) {
+	public Dimension getDimension(Document document) {
 		UserAgent agent = new UserAgentAdapter();
 		DocumentLoader loader = new DocumentLoader(agent);
 
@@ -20,6 +20,7 @@ public class GraphicsNodeBoundsProvider implements BoundsProvider {
 		context.setDynamic(true);
 
 		GVTBuilder builder = new GVTBuilder();
-		return builder.build(context, document).getPrimitiveBounds();
+		Rectangle2D primitiveBounds = builder.build(context, document).getPrimitiveBounds();
+		return new Dimension((float)primitiveBounds.getWidth(), (float)primitiveBounds.getHeight());
 	}
 }

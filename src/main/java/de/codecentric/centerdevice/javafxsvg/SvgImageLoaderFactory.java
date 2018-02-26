@@ -8,20 +8,20 @@ import com.sun.javafx.iio.ImageLoader;
 import com.sun.javafx.iio.ImageLoaderFactory;
 import com.sun.javafx.iio.ImageStorage;
 
-import de.codecentric.centerdevice.javafxsvg.bounds.BoundsProvider;
-import de.codecentric.centerdevice.javafxsvg.bounds.DefaultBoundsProvider;
+import de.codecentric.centerdevice.javafxsvg.bounds.DimensionProvider;
+import de.codecentric.centerdevice.javafxsvg.bounds.DefaultDimensionProvider;
 
 public class SvgImageLoaderFactory implements ImageLoaderFactory {
 	private static final SvgImageLoaderFactory instance = new SvgImageLoaderFactory();
 
-	private static BoundsProvider boundsProvider;
+	private static DimensionProvider dimensionProvider;
 
 	public static final void install() {
-		install(new DefaultBoundsProvider());
+		install(new DefaultDimensionProvider());
 	}
 
-	public static final void install(BoundsProvider boundsProvider) {
-		SvgImageLoaderFactory.boundsProvider = boundsProvider;
+	public static final void install(DimensionProvider dimensionProvider) {
+		SvgImageLoaderFactory.dimensionProvider = dimensionProvider;
 		
 		ImageStorage.addImageLoaderFactory(instance);
 	}
@@ -37,6 +37,6 @@ public class SvgImageLoaderFactory implements ImageLoaderFactory {
 
 	@Override
 	public ImageLoader createImageLoader(InputStream input) throws IOException {
-		return new SvgImageLoader(input, boundsProvider);
+		return new SvgImageLoader(input, dimensionProvider);
 	}
 }
