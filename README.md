@@ -12,11 +12,11 @@ More details about the project can be found at the codecentric blog:
 
 If you are using maven, just add JavaFxSVG to the dependencies
 
-		<dependency>
-			<groupId>de.codecentric.centerdevice</groupId>
-			<artifactId>javafxsvg</artifactId>
-			<version>1.3.0</version>
-		</dependency>
+	<dependency>
+		<groupId>de.codecentric.centerdevice</groupId>
+		<artifactId>javafxsvg</artifactId>
+		<version>1.3.0</version>
+	</dependency>
 
 ## Usage
 
