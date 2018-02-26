@@ -71,7 +71,6 @@ public class SvgImageLoader extends ImageLoaderImpl {
 											 .replaceAll(" ");
 		Matcher matcher = Pattern.compile("[^<>\\n]*<svg([^>]*)>", Pattern.DOTALL)
 								 .matcher(uncommentedSVGString);
-
 		boolean fallback = true;
 
 		if ( matcher.find() ) {
