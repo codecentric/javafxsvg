@@ -18,8 +18,8 @@ import com.sun.javafx.iio.ImageFrame;
 import com.sun.javafx.iio.ImageStorage;
 import com.sun.javafx.iio.common.ImageLoaderImpl;
 
-import de.codecentric.centerdevice.javafxsvg.bounds.DimensionProvider;
-import de.codecentric.centerdevice.javafxsvg.bounds.Dimension;
+import de.codecentric.centerdevice.javafxsvg.dimension.Dimension;
+import de.codecentric.centerdevice.javafxsvg.dimension.DimensionProvider;
 import javafx.stage.Screen;
 
 public class SvgImageLoader extends ImageLoaderImpl {

@@ -8,8 +8,8 @@ import com.sun.javafx.iio.ImageLoader;
 import com.sun.javafx.iio.ImageLoaderFactory;
 import com.sun.javafx.iio.ImageStorage;
 
-import de.codecentric.centerdevice.javafxsvg.bounds.DimensionProvider;
-import de.codecentric.centerdevice.javafxsvg.bounds.DefaultDimensionProvider;
+import de.codecentric.centerdevice.javafxsvg.dimension.DefaultDimensionProvider;
+import de.codecentric.centerdevice.javafxsvg.dimension.DimensionProvider;
 
 public class SvgImageLoaderFactory implements ImageLoaderFactory {
 	private static final SvgImageLoaderFactory instance = new SvgImageLoaderFactory();

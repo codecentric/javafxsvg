@@ -1,4 +1,4 @@
-package de.codecentric.centerdevice.javafxsvg.bounds;
+package de.codecentric.centerdevice.javafxsvg.dimension;
 
 public class Dimension {
 	private final float width;

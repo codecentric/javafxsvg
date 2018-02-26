@@ -1,4 +1,4 @@
-package de.codecentric.centerdevice.javafxsvg.bounds;
+package de.codecentric.centerdevice.javafxsvg.dimension;
 
 import org.w3c.dom.Document;
 

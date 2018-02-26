@@ -1,4 +1,4 @@
-package de.codecentric.centerdevice.javafxsvg.bounds;
+package de.codecentric.centerdevice.javafxsvg.dimension;
 
 import java.awt.geom.Rectangle2D;
 
@@ -9,7 +9,7 @@ import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.UserAgentAdapter;
 import org.w3c.dom.Document;
 
-public class GraphicsNodeDimensionProvider implements DimensionProvider {
+public class PrimitiveDimensionProvider implements DimensionProvider {
 
 	@Override
 	public Dimension getDimension(Document document) {
