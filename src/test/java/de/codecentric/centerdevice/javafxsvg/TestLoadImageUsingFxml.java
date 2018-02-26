@@ -5,14 +5,14 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.loadui.testfx.GuiTest;
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.loadui.testfx.GuiTest;
 
 public class TestLoadImageUsingFxml extends GuiTest {
 

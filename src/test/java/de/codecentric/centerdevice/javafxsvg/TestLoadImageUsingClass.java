@@ -5,14 +5,14 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.InputStream;
 
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.loadui.testfx.GuiTest;
+
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.loadui.testfx.GuiTest;
 
 public class TestLoadImageUsingClass extends GuiTest {
 
