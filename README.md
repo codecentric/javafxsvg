@@ -27,6 +27,15 @@ Add this line to your application:
 preferably before any JavaFX code is executed. After this, you can use 
 SVG images just as any other Image in your application.
 
+If the JavaFX container does not specify any width or height, the image is
+rendered with default dimensions (currently 400x400). To changes this behavior,
+a `DimensionProvider` can be passed with the install command: 
+
+    SvgImageLoaderFactory.install(new PrimitiveDimensionProvider());
+
+will try to determine the actual size of the SVG (as specified by `width` and 
+`height` attributes) and use this as a fallback size.
+
 ## Known Issues
 
 Currently, SVGs are required to start with either "<svg" or "<?xml" 
