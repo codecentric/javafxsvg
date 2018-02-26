@@ -31,11 +31,41 @@ public class SvgImageLoaderTest {
 
 	@Test()
 	@SuppressWarnings( "UseOfSystemOutOrSystemErr" )
+	public void testUpdateSVTSizeBaconCommented() {
+
+		System.out.println("updateSVTSize - 'bacon-commented.svg' stream");
+
+		InputStream input = this.getClass().getClassLoader().getResourceAsStream("bacon-commented.svg");
+		SvgImageLoader loader = new SvgImageLoader(input);
+		int[] result = new int[] { loader.getSvtWidth(), loader.getSvtHeight() };
+		int[] expResult = new int[] { 64, 29 };
+
+		assertArrayEquals(expResult, result);
+
+	}
+
+	@Test()
+	@SuppressWarnings( "UseOfSystemOutOrSystemErr" )
 	public void testUpdateSVTSizeClose() {
 
 		System.out.println("updateSVTSize - 'close.svg' stream");
 
 		InputStream input = this.getClass().getClassLoader().getResourceAsStream("close.svg");
+		SvgImageLoader loader = new SvgImageLoader(input);
+		int[] result = new int[] { loader.getSvtWidth(), loader.getSvtHeight() };
+		int[] expResult = new int[] { 12, 12 };
+
+		assertArrayEquals(expResult, result);
+
+	}
+
+	@Test()
+	@SuppressWarnings( "UseOfSystemOutOrSystemErr" )
+	public void testUpdateSVTSizeCloseCommented() {
+
+		System.out.println("updateSVTSize - 'close-commented.svg' stream");
+
+		InputStream input = this.getClass().getClassLoader().getResourceAsStream("close-commented.svg");
 		SvgImageLoader loader = new SvgImageLoader(input);
 		int[] result = new int[] { loader.getSvtWidth(), loader.getSvtHeight() };
 		int[] expResult = new int[] { 12, 12 };

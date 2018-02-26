@@ -66,8 +66,12 @@ public class SvgImageLoader extends ImageLoaderImpl {
 		this.input = new ByteArrayInputStream(svgString.getBytes());
 
 		//  Extracting the SVG attributes...
-		Pattern pattern = Pattern.compile("[^<>\\n]*<svg([^>]*)>", Pattern.DOTALL);
-		Matcher matcher = pattern.matcher(svgString);
+		String uncommentedSVGString = Pattern.compile("<!--(?:(?!-->).)*-->", Pattern.DOTALL)
+											 .matcher(svgString)
+											 .replaceAll(" ");
+		Matcher matcher = Pattern.compile("[^<>\\n]*<svg([^>]*)>", Pattern.DOTALL)
+								 .matcher(uncommentedSVGString);
+
 		boolean fallback = true;
 
 		if ( matcher.find() ) {
