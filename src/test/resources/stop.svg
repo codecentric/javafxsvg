@@ -1,0 +1,19 @@
+<svg 
+    width="1000"
+    height="1000"
+    xmlns="http://www.w3.org/2000/svg" style="vector-effect: non-scaling-stroke;"
+>
+ <metadata style="vector-effect: non-scaling-stroke;">Svg Vector Icons : http://www.onlinewebfonts.com/icon</metadata>
+
+ <g>
+  <title>background</title>
+  <rect fill="none" id="canvas_background" height="402" width="582" y="-1" x="-1"/>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <ellipse ry="441.499987" rx="452.000012" id="svg_3" cy="503.099983" cx="499.500015" stroke-width="1.5" stroke="#000000" fill="#ffffff"/>
+  <g style="vector-effect: non-scaling-stroke;" id="svg_1">
+   <path style="vector-effect: non-scaling-stroke;" id="svg_2" d="m501,18c-270.600006,0 -490,219.399994 -490,490c0,270.599976 219.399994,490 490,490c270.599976,0 490,-219.400024 490,-490c0,-270.600006 -219.400024,-490 -490,-490zm0,888.099976c-219.899994,0 -398.100006,-178.299988 -398.100006,-398.100006s178.200012,-398.099968 398.100006,-398.099968s398.099976,178.200005 398.099976,398.099998s-178.199951,398.099976 -398.099976,398.099976zm-183.700012,-581.799988l367.5,0l0,367.5l-367.5,0l0,-367.5z"/>
+  </g>
+ </g>
+</svg>

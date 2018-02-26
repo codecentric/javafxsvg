@@ -3,3 +3,4 @@
 screenshot*.png
 .settings/*
 target/*
+/nbproject/

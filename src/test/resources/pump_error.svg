@@ -1,0 +1,15 @@
+<svg width="60" height="36" xmlns="http://www.w3.org/2000/svg">
+ <style type="text/css">.st0{fill:none;stroke:#000000;stroke-miterlimit:10;}</style>
+
+ <g>
+  <title>background</title>
+  <rect fill="none" id="canvas_background" height="36" width="60" />
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <line id="svg_6" y2="17.146333" x2="-0.166667" y1="17.146333" x1="12.793333" class="st0"/>
+  <line id="svg_7" y2="17.146333" x2="45.087" y1="17.146333" x1="58.714666" class="st0"/>
+  <ellipse ry="16" rx="16" id="svg_14" cy="17.166667" cx="29.137001" stroke="#000000" fill="#ff0000"/>
+  <polyline id="svg_9" points="27.970334380865097,1.3333333134651184 44.7833226621151,17.22966831922531 27.970334380865097,33.12600201368332 " class="st0"/>
+ </g>
+</svg>
