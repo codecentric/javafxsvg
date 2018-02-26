@@ -3,6 +3,7 @@ package de.codecentric.centerdevice.javafxsvg;
 import static org.apache.batik.transcoder.SVGAbstractTranscoder.KEY_HEIGHT;
 import static org.apache.batik.transcoder.SVGAbstractTranscoder.KEY_WIDTH;
 
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,20 +20,20 @@ import com.sun.javafx.iio.ImageStorage;
 import com.sun.javafx.iio.common.ImageLoaderImpl;
 
 import de.codecentric.centerdevice.javafxsvg.bounds.BoundsProvider;
-import de.codecentric.centerdevice.javafxsvg.bounds.BoundsProviderFactory;
 import javafx.stage.Screen;
 
 public class SvgImageLoader extends ImageLoaderImpl {
-
-	private static final int DEFAULT_SIZE = 400;
 
 	private static final int BYTES_PER_PIXEL = 4; // RGBA
 
 	private final InputStream input;
 
 	private float maxPixelScale = 0;
+	
+	private BoundsProvider boundsProvider;
 
-	protected SvgImageLoader(InputStream input) {
+
+	protected SvgImageLoader(InputStream input, BoundsProvider boundsProvider) {
 		super(SvgDescriptor.getInstance());
 
 		if (input == null) {
@@ -40,6 +41,7 @@ public class SvgImageLoader extends ImageLoaderImpl {
 		}
 
 		this.input = input;
+		this.boundsProvider = boundsProvider;
 	}
 
 	@Override
@@ -50,10 +52,10 @@ public class SvgImageLoader extends ImageLoaderImpl {
 		}
 
 		Document document = createDocument();
-		BoundsProvider boundsProvider = BoundsProviderFactory.fromDocument(document);
-
-		float imageWidth = width > 0 ? width : (float) boundsProvider.getPrimitiveBounds().getWidth();
-		float imageHeight = height > 0 ? height : (float) boundsProvider.getPrimitiveBounds().getHeight();
+		Rectangle2D fallbackBounds = (width <= 0 || height <= 0) ? boundsProvider.getBounds(document) : null;
+		
+		float imageWidth = width > 0 ? width : (float) fallbackBounds.getWidth();
+		float imageHeight = height > 0 ? height : (float) fallbackBounds.getHeight();
 
 		try {
 			return createImageFrame(document, imageWidth, imageHeight, getPixelScale());
@@ -63,8 +65,7 @@ public class SvgImageLoader extends ImageLoaderImpl {
 	}
 
 	private Document createDocument() throws IOException {
-		SAXSVGDocumentFactory factory = new SAXSVGDocumentFactory(XMLResourceDescriptor.getXMLParserClassName());
-		return factory.createDocument(null, this.input);
+		return new SAXSVGDocumentFactory(XMLResourceDescriptor.getXMLParserClassName()).createDocument(null, this.input);
 	}
 
 	public float getPixelScale() {

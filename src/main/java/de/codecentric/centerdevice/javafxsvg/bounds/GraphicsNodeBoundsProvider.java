@@ -11,14 +11,8 @@ import org.w3c.dom.Document;
 
 public class GraphicsNodeBoundsProvider implements BoundsProvider {
 
-	private final Document document;
-
-	GraphicsNodeBoundsProvider(Document document) {
-		this.document = document;
-	}
-
 	@Override
-	public Rectangle2D getPrimitiveBounds() {
+	public Rectangle2D getBounds(Document document) {
 		UserAgent agent = new UserAgentAdapter();
 		DocumentLoader loader = new DocumentLoader(agent);
 
@@ -28,5 +22,4 @@ public class GraphicsNodeBoundsProvider implements BoundsProvider {
 		GVTBuilder builder = new GVTBuilder();
 		return builder.build(context, document).getPrimitiveBounds();
 	}
-
 }
