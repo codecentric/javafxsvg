@@ -9,7 +9,7 @@ public class SvgDescriptor extends ImageDescriptor {
 	private static final String[] extensions = { "svg" };
 
 	private static final Signature[] signatures = {
-			new Signature("<svg".getBytes()), new Signature("<?xml".getBytes()) };
+			new Signature("<svg".getBytes()), new Signature("<?xml".getBytes()), new Signature("<!--?xml".getBytes()) };
 
 	private static ImageDescriptor theInstance = null;
 
